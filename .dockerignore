@@ -1,0 +1,34 @@
+# 忽略版本控制目录
+.git
+.gitignore
+
+# 忽略编译输出
+*.exe
+*.out
+*.so
+bin/
+
+# 忽略日志文件
+*.log
+
+# 忽略环境变量文件（使用容器中的.env）
+.env
+
+# 忽略文档文件
+*.md
+
+# 忽略Docker相关文件（避免递归）
+Dockerfile
+.dockerignore
+
+# 忽略临时文件
+tmp/
+temp/
+
+# 忽略测试文件
+test/
+tests/
+
+# 忽略IDE配置文件
+.vscode/
+.idea/

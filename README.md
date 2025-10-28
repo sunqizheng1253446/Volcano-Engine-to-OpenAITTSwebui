@@ -33,6 +33,8 @@ Volcano-Engine-to-OpenAITTSwebui/
 ├── .env                     # 环境变量配置
 ├── .env.example             # 环境变量示例
 ├── go.mod                   # Go 模块定义
+├── Dockerfile               # Docker构建文件
+├── .dockerignore            # Docker忽略文件
 └── README.md                # 项目说明
 ```
 
@@ -42,6 +44,7 @@ Volcano-Engine-to-OpenAITTSwebui/
 
 - Go 1.20 或更高版本
 - 要监控的目标服务API
+- Docker（可选，用于容器化部署）
 
 ### 快速开始
 
@@ -56,8 +59,21 @@ Volcano-Engine-to-OpenAITTSwebui/
 
 2. **启动服务**
 
+   方式一：直接运行（需要安装Go）：
    ```bash
    go run cmd/main.go
+   ```
+
+   方式二：编译后运行：
+   ```bash
+   go build -o tts-monitor cmd/main.go
+   ./tts-monitor
+   ```
+
+   方式三：使用Docker运行：
+   ```bash
+   docker build -t health-monitor .
+   docker run -p 8080:8080 --env-file .env health-monitor
    ```
 
 3. **访问监控页面**
@@ -118,6 +134,28 @@ Volcano-Engine-to-OpenAITTSwebui/
 | memory_usage | float64 | 内存使用率（百分比） |
 | request_count | int | 总请求数 |
 | version | string | 服务版本号 |
+
+## Docker部署
+
+### 构建镜像
+```bash
+docker build -t health-monitor .
+```
+
+### 运行容器
+```bash
+docker run -d -p 8080:8080 --name health-monitor health-monitor
+```
+
+### 使用环境变量文件运行
+```bash
+docker run -d -p 8080:8080 --env-file .env --name health-monitor health-monitor
+```
+
+### 查看日志
+```bash
+docker logs health-monitor
+```
 
 ## 前端页面热更新
 
