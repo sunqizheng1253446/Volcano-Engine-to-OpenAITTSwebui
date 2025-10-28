@@ -8,17 +8,13 @@ import (
 )
 
 type Config struct {
-	ListenAddr           string
-	MaxConnections       int
-	MaxConcurrentCalls   int
-	CheckInterval        int
-	ByteDanceAppID       string
-	ByteDanceBearerToken string
-	ByteDanceCluster     string
-	ByteDanceVoiceType   string
-	OpenAITTSAPIKey      string
-	LogLevel             string
-	GinMode              string
+	ListenAddr         string
+	MaxConnections     int
+	MaxConcurrentCalls int
+	CheckInterval      int
+	TargetAPIURL       string // 被监控API的URL
+	LogLevel           string
+	GinMode            string
 }
 
 func LoadConfig() (*Config, error) {
@@ -26,17 +22,13 @@ func LoadConfig() (*Config, error) {
 	_ = godotenv.Load()
 
 	config := &Config{
-		ListenAddr:           getEnv("LISTEN_ADDR", ":8080"),
-		MaxConnections:       getEnvAsInt("MAX_CONNECTIONS", 100),
-		MaxConcurrentCalls:   getEnvAsInt("MAX_CONCURRENT_CALLS", 10),
-		CheckInterval:        getEnvAsInt("CHECK_INTERVAL", 5), // 秒
-		ByteDanceAppID:       getEnv("BYTEDANCE_TTS_APP_ID", ""),
-		ByteDanceBearerToken: getEnv("BYTEDANCE_TTS_BEARER_TOKEN", ""),
-		ByteDanceCluster:     getEnv("BYTEDANCE_TTS_CLUSTER", ""),
-		ByteDanceVoiceType:   getEnv("BYTEDANCE_TTS_VOICE_TYPE", ""),
-		OpenAITTSAPIKey:      getEnv("OPENAI_TTS_API_KEY", ""),
-		LogLevel:             getEnv("LOG_LEVEL", "info"),
-		GinMode:              getEnv("GIN_MODE", "release"),
+		ListenAddr:         getEnv("LISTEN_ADDR", ":8080"),
+		MaxConnections:     getEnvAsInt("MAX_CONNECTIONS", 100),
+		MaxConcurrentCalls: getEnvAsInt("MAX_CONCURRENT_CALLS", 10),
+		CheckInterval:      getEnvAsInt("CHECK_INTERVAL", 5),                             // 秒
+		TargetAPIURL:       getEnv("TARGET_API_URL", "http://localhost:8081/api/health"), // 默认目标API地址
+		LogLevel:           getEnv("LOG_LEVEL", "info"),
+		GinMode:            getEnv("GIN_MODE", "release"),
 	}
 
 	return config, nil
