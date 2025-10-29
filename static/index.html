@@ -195,7 +195,7 @@
                         <i class="fa fa-bolt text-warning"></i>
                     </div>
                     <p id="avg-response-time" class="text-3xl font-bold">0</p>
-                    <p class="text-xs text-gray-500">毫秒</p>
+                    <p class="text-xs text-gray-500">秒</p>
                 </div>
                 <div class="stats-card">
                     <div class="flex justify-between items-center mb-2">
@@ -319,7 +319,7 @@
                 data: {
                     labels: Array(30).fill(''),
                     datasets: [{
-                        label: '响应时间 (ms)',
+                        label: '响应时间 (s)',
                         data: responseTimeData,
                         borderColor: '#3b82f6',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
@@ -395,8 +395,8 @@
         
         // 更新图表数据
         function updateCharts(newResponseTime, newConnections) {
-            // 更新响应时间数据
-            responseTimeData.push(newResponseTime);
+            // 更新响应时间数据（将毫秒转换为秒）
+            responseTimeData.push(newResponseTime / 1000);
             if (responseTimeData.length > 30) {
                 responseTimeData.shift();
             }
@@ -486,7 +486,7 @@
                 document.getElementById('uptime').textContent = formatUptime(uptimeSeconds);
                 
                 // 更新性能指标
-                document.getElementById('avg-response-time').textContent = healthData.avg_response_time || 0;
+                document.getElementById('avg-response-time').textContent = (healthData.avg_response_time / 1000).toFixed(3) || 0;
                 document.getElementById('today-requests').textContent = healthData.today_request_count || 0;
                 document.getElementById('success-rate').textContent = ((healthData.success_rate || 0) * 100).toFixed(2) + '%';
                 
