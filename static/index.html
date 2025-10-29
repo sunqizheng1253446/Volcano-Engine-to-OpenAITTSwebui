@@ -491,19 +491,20 @@
                 document.getElementById('success-rate').textContent = ((healthData.success_rate || 0) * 100).toFixed(2) + '%';
                 
                 // 更新资源使用情况
-                const resourceUsage = healthData.resource_usage || {};
-                const cpuUsage = parseFloat(resourceUsage.cpu_usage) || 0;
-                const memoryUsage = parseFloat(resourceUsage.memory_usage) || 0;
+                // 修正CPU和内存使用率的获取方式，直接从healthData对象中获取
+                const cpuUsage = parseFloat(healthData.cpu_usage) || 0;
+                const memoryUsage = parseFloat(healthData.memory_usage) || 0;
                 
-                document.getElementById('cpu-usage').textContent = cpuUsage.toFixed(1) + '%';
-                document.getElementById('cpu-progress').style.width = cpuUsage.toFixed(1) + '%';
+                // 格式化CPU和内存使用率，截断到小数点后两位
+                document.getElementById('cpu-usage').textContent = cpuUsage.toFixed(2) + '%';
+                document.getElementById('cpu-progress').style.width = cpuUsage.toFixed(2) + '%';
                 
-                document.getElementById('memory-usage').textContent = memoryUsage.toFixed(1) + '%';
-                document.getElementById('memory-progress').style.width = memoryUsage.toFixed(1) + '%';
-                document.getElementById('memory-detail').textContent = resourceUsage.memory_mb || '0 MB';
+                document.getElementById('memory-usage').textContent = memoryUsage.toFixed(2) + '%';
+                document.getElementById('memory-progress').style.width = memoryUsage.toFixed(2) + '%';
+                document.getElementById('memory-detail').textContent = healthData.memory_mb || '0 MB';
                 
-                document.getElementById('network-in').textContent = resourceUsage.network_in || '0 KB';
-                document.getElementById('network-out').textContent = resourceUsage.network_out || '0 KB';
+                document.getElementById('network-in').textContent = healthData.network_in || '0 KB';
+                document.getElementById('network-out').textContent = healthData.network_out || '0 KB';
                 
                 // 更新最后检查时间
                 const lastCheckTime = healthData.last_check_time ? new Date(healthData.last_check_time) : new Date();
