@@ -66,6 +66,6 @@
 | MAX_CONNECTIONS | 100 | 监控系统最大并发连接数 |
 | MAX_CONCURRENT_CALLS | 10 | 监控系统最大并发调用数 |
 | CHECK_INTERVAL | 5 | 检查间隔（秒） |
-| TARGET_API_URL | http://localhost:8081/api/health | 被监控服务的健康检查API地址 |
+| TARGET_API_URL | http://localhost:8081 | 被监控服务的基础URL（只包含协议头和主域名） |
 | LOG_LEVEL | info | 日志级别 |
 | GIN_MODE | release | Gin 框架模式 |

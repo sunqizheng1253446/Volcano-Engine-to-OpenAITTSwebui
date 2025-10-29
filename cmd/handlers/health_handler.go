@@ -56,8 +56,11 @@ func (h *HealthHandler) HealthCheck(c *gin.Context) {
 func (h *HealthHandler) fetchTargetHealth() (models.TargetHealthStatus, error) {
 	var targetHealth models.TargetHealthStatus
 
+	// 构造完整的API URL，添加 /api/health 路径
+	apiURL := h.config.TargetAPIURL + "/api/health"
+
 	// 发起HTTP请求获取目标服务健康数据
-	resp, err := h.client.Get(h.config.TargetAPIURL)
+	resp, err := h.client.Get(apiURL)
 	if err != nil {
 		return targetHealth, fmt.Errorf("failed to connect to target API: %w", err)
 	}
