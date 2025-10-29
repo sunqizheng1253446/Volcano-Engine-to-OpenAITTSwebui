@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Volcano Engine TTS 健康监测</title>
+    <title>TTS 健康监测</title>
     <!-- 引入Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入Font Awesome -->
@@ -87,7 +87,7 @@
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <i class="fa fa-heartbeat text-2xl" aria-hidden="true"></i>
-                <h1 class="text-xl font-bold">Volcano Engine TTS 健康监测</h1>
+                <h1 class="text-xl font-bold">TTS 健康监测</h1>
             </div>
             <div class="flex items-center space-x-4">
                 <button id="refresh-btn" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-md transition-all">
@@ -272,39 +272,6 @@
             </div>
         </section>
 
-        <!-- 配置信息 -->
-        <section class="mb-8">
-            <h2 class="text-xl font-bold mb-4">配置信息</h2>
-            <div class="stats-card">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div>
-                        <p class="text-sm text-gray-500">火山引擎 App ID</p>
-                        <p id="app-id" class="font-medium">--</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">集群</p>
-                        <p id="cluster" class="font-medium">--</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">语音类型</p>
-                        <p id="voice-type" class="font-medium">--</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">监听地址</p>
-                        <p id="listen-addr" class="font-medium">--</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">最大连接数</p>
-                        <p id="config-max-connections" class="font-medium">--</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">最大并发调用</p>
-                        <p id="config-max-calls" class="font-medium">--</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- 最近错误记录 -->
         <section class="mb-8">
             <h2 class="text-xl font-bold mb-4">最近错误记录</h2>
@@ -334,7 +301,7 @@
     <!-- 页脚 -->
     <footer class="bg-gray-800 text-white py-4">
         <div class="container mx-auto px-4 text-center text-sm">
-            <p>Volcano Engine TTS 健康监测系统 &copy; 2025</p>
+            <p>TTS 健康监测系统 &copy; 2025</p>
         </div>
     </footer>
 
@@ -537,15 +504,6 @@
                 
                 document.getElementById('network-in').textContent = resourceUsage.network_in || '0 KB';
                 document.getElementById('network-out').textContent = resourceUsage.network_out || '0 KB';
-                
-                // 更新配置信息
-                const config = healthData.config || {};
-                document.getElementById('app-id').textContent = config.byte_dance_app_id || '--';
-                document.getElementById('cluster').textContent = config.byte_dance_cluster || '--';
-                document.getElementById('voice-type').textContent = config.byte_dance_voice_type || '--';
-                document.getElementById('listen-addr').textContent = config.listen_addr || '--';
-                document.getElementById('config-max-connections').textContent = config.max_connections || '--';
-                document.getElementById('config-max-calls').textContent = config.max_concurrent_calls || '--';
                 
                 // 更新最后检查时间
                 const lastCheckTime = healthData.last_check_time ? new Date(healthData.last_check_time) : new Date();
