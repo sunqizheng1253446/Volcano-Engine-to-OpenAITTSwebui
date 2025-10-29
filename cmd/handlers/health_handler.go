@@ -88,32 +88,83 @@ func (h *HealthHandler) fetchTargetHealth() (models.TargetHealthStatus, error) {
 	return targetHealth, nil
 }
 
-// GetErrorRecords 获取错误记录
-func (h *HealthHandler) GetErrorRecords(c *gin.Context) {
-	errorRecords := h.monitor.GetErrorRecords()
-	c.JSON(http.StatusOK, gin.H{
-		"error_records": errorRecords,
-		"count":         len(errorRecords),
-	})
+// fetchTargetMetrics 从目标API获取性能指标数据
+func (h *HealthHandler) fetchTargetMetrics() (models.TargetHealthStatus, error) {
+	var targetMetrics models.TargetHealthStatus
+
+	// 构造完整的API URL，添加 /api/metrics 路径
+	apiURL := h.config.TargetAPIURL + "/api/metrics"
+
+	// 发起HTTP请求获取目标服务性能指标数据
+	resp, err := h.client.Get(apiURL)
+	if err != nil {
+		return targetMetrics, fmt.Errorf("failed to connect to target metrics API: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// 检查HTTP响应状态
+	if resp.StatusCode != http.StatusOK {
+		return targetMetrics, fmt.Errorf("target metrics API returned status code: %d", resp.StatusCode)
+	}
+
+	// 读取响应体
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return targetMetrics, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	// 解析JSON数据
+	if err := json.Unmarshal(body, &targetMetrics); err != nil {
+		return targetMetrics, fmt.Errorf("failed to parse JSON response: %w", err)
+	}
+
+	return targetMetrics, nil
 }
 
 // GetMetrics 获取性能指标
 func (h *HealthHandler) GetMetrics(c *gin.Context) {
-	targetHealth := h.monitor.GetTargetHealthStatus()
+	// 从目标API获取性能指标数据
+	targetMetrics, err := h.fetchTargetMetrics()
+	if err != nil {
+		// 记录错误
+		h.monitor.RecordError("fetch_target_metrics", err.Error())
+
+		// 返回错误状态
+		c.JSON(http.StatusServiceUnavailable, gin.H{
+			"error":   "Failed to fetch target service metrics data",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	// 更新监控器中的数据
+	h.monitor.UpdateTargetHealthStatus(targetMetrics)
 
 	metrics := gin.H{
-		"status":             targetHealth.Status,
-		"uptime_seconds":     targetHealth.UptimeSeconds,
-		"active_connections": targetHealth.ActiveConnections,
-		"current_calls":      targetHealth.CurrentCalls,
-		"avg_response_time":  targetHealth.AvgResponseTime,
-		"success_rate":       targetHealth.SuccessRate,
-		"error_count":        targetHealth.ErrorCount,
-		"cpu_usage":          targetHealth.CPUUsage,
-		"memory_usage":       targetHealth.MemoryUsage,
-		"request_count":      targetHealth.RequestCount,
-		"last_check_time":    targetHealth.LastCheckTime,
+		"status":             targetMetrics.Status,
+		"uptime_seconds":     targetMetrics.UptimeSeconds,
+		"active_connections": targetMetrics.ActiveConnections,
+		"current_calls":      targetMetrics.CurrentCalls,
+		"avg_response_time":  targetMetrics.AvgResponseTime,
+		"success_rate":       targetMetrics.SuccessRate,
+		"error_count":        targetMetrics.ErrorCount,
+		"cpu_usage":          targetMetrics.CPUUsage,
+		"memory_usage":       targetMetrics.MemoryUsage,
+		"request_count":      targetMetrics.RequestCount,
+		"last_check_time":    targetMetrics.LastCheckTime,
 	}
 
 	c.JSON(http.StatusOK, metrics)
+}
+
+// GetErrorRecords 获取错误记录
+func (h *HealthHandler) GetErrorRecords(c *gin.Context) {
+	// 获取错误记录
+	errorRecords := h.monitor.GetErrorRecords()
+
+	// 返回错误记录
+	c.JSON(http.StatusOK, gin.H{
+		"error_records": errorRecords,
+		"count":         len(errorRecords),
+	})
 }
