@@ -3,8 +3,6 @@ package config
 import (
 	"os"
 	"strconv"
-
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -18,9 +16,6 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
-	// 尝试加载.env文件，如果不存在也不报错
-	_ = godotenv.Load()
-
 	config := &Config{
 		ListenAddr:         getEnv("LISTEN_ADDR", ":8080"),
 		MaxConnections:     getEnvAsInt("MAX_CONNECTIONS", 100),
