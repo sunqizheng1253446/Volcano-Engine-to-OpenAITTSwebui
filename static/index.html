@@ -93,9 +93,6 @@
                 <button id="refresh-btn" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-md transition-all">
                     <i class="fa fa-refresh mr-2" aria-hidden="true"></i>刷新
                 </button>
-                <button id="export-btn" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-md transition-all">
-                    <i class="fa fa-download mr-2" aria-hidden="true"></i>导出
-                </button>
                 <div id="last-update" class="text-sm">最后更新: 从未</div>
             </div>
         </div>
@@ -611,23 +608,6 @@
                 });
         }
         
-        // 导出数据
-        function exportData() {
-            fetch('/health')
-                .then(response => response.json())
-                .then(data => {
-                    const jsonStr = JSON.stringify(data, null, 2);
-                    const blob = new Blob([jsonStr], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `health-data-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                })
-                .catch(error => console.error('导出数据失败:', error));
-        }
-        
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', () => {
             // 初始化图表
@@ -659,20 +639,6 @@
                     
                     fetchHealthData();
                     fetchErrorRecords();
-                });
-            }
-            
-            // 导出按钮点击事件
-            const exportBtn = document.getElementById('export-btn');
-            if (exportBtn) {
-                exportBtn.addEventListener('click', () => {
-                    // 添加点击效果
-                    exportBtn.classList.add('bg-opacity-30');
-                    setTimeout(() => {
-                        exportBtn.classList.remove('bg-opacity-30');
-                    }, 200);
-                    
-                    exportData();
                 });
             }
             
